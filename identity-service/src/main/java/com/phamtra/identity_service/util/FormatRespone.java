@@ -34,8 +34,9 @@ public class FormatRespone implements ResponseBodyAdvice<Object> {
         if (status >= 400) {
             return body;
         } else {
-            res.setData("CALL API SUCCESS");
+            res.setData(body);
         }
+        res.setMessage("CALL API SUCCESS");
         return res;
     }
 }
