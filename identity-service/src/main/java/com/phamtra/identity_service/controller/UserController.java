@@ -5,6 +5,7 @@ import com.phamtra.identity_service.dto.request.UserUpdateDTORequest;
 import com.phamtra.identity_service.entity.User;
 import com.phamtra.identity_service.exception.IdInvalidException;
 import com.phamtra.identity_service.service.UserService;
+import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,10 +49,11 @@ public class UserController {
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
-        if (id > 1500) {
-            throw new IdInvalidException("id ko lon hon 1500");
+        User currentUser = this.userService.getUserbyId(id);
+        if (currentUser == null) {
+            throw new IdInvalidException("User với id: " + id + " không tồn tại");
         }
         this.userService.deleteUser(id);
-        return ResponseEntity.ok().body("successfuly");
+        return ResponseEntity.ok(null);
     }
 }
