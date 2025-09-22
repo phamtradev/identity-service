@@ -56,4 +56,8 @@ public class UserService {
     public void deleteUser(long id) {
         this.userRepository.deleteById(id);
     }
+
+    public boolean isUsernameExist(String username) {
+        return this.userRepository.existsByUsername(username);
+    }
 }

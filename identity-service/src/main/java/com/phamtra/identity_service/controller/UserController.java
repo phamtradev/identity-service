@@ -2,6 +2,7 @@ package com.phamtra.identity_service.controller;
 
 import com.phamtra.identity_service.dto.request.UserDTORequest;
 import com.phamtra.identity_service.entity.User;
+import com.phamtra.identity_service.exception.IdInvalidException;
 import com.phamtra.identity_service.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,11 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<?> createUser(@RequestBody UserDTORequest request) {
+    public ResponseEntity<?> createUser(@RequestBody UserDTORequest request) throws IdInvalidException {
+        boolean isUsernameExist = this.userService.isUsernameExist(request.getUsername());
+        if (isUsernameExist) {
+            throw new IdInvalidException("Username " + request.getUsername() + " đã tồn tại, vui lòng sử dụng username khác");
+        }
         User user = this.userService.createUser(request);
         return ResponseEntity.ok().body(user);
     }
@@ -42,7 +47,10 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("id") long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
+        if (id > 1500) {
+            throw new IdInvalidException("id ko lon hon 1500");
+        }
         this.userService.deleteUser(id);
         return ResponseEntity.ok().body("successfuly");
     }
