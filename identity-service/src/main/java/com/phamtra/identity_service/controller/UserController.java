@@ -1,13 +1,13 @@
 package com.phamtra.identity_service.controller;
 
-import com.phamtra.identity_service.dto.request.UserDTORequest;
+import com.phamtra.identity_service.dto.request.UserCreateDTORequest;
+import com.phamtra.identity_service.dto.request.UserUpdateDTORequest;
 import com.phamtra.identity_service.entity.User;
 import com.phamtra.identity_service.exception.IdInvalidException;
 import com.phamtra.identity_service.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1")
@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<?> createUser(@RequestBody UserDTORequest request) throws IdInvalidException {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserCreateDTORequest request) throws IdInvalidException {
         boolean isUsernameExist = this.userService.isUsernameExist(request.getUsername());
         if (isUsernameExist) {
             throw new IdInvalidException("Username " + request.getUsername() + " đã tồn tại, vui lòng sử dụng username khác");
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable("id") long id, @RequestBody UserDTORequest request) {
+    public ResponseEntity<?> updateUser(@PathVariable("id") long id, @RequestBody UserUpdateDTORequest request) {
         User user = this.userService.updateUser(id, request);
         return ResponseEntity.ok().body(user);
     }

@@ -1,6 +1,7 @@
 package com.phamtra.identity_service.service;
 
-import com.phamtra.identity_service.dto.request.UserDTORequest;
+import com.phamtra.identity_service.dto.request.UserCreateDTORequest;
+import com.phamtra.identity_service.dto.request.UserUpdateDTORequest;
 import com.phamtra.identity_service.entity.User;
 import com.phamtra.identity_service.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(UserDTORequest request) {
+    public User createUser(UserCreateDTORequest request) {
         User user = new User();
 
         user.setUsername(request.getUsername());
@@ -29,7 +30,7 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
-    public User updateUser(long id, UserDTORequest request) {
+    public User updateUser(long id, UserUpdateDTORequest request) {
         User user = getUserbyId(id);
 
         user.setUsername(request.getUsername());
