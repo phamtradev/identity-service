@@ -8,6 +8,7 @@ import com.phamtra.identity_service.service.UserService;
 import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,13 +16,17 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/users")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserCreateDTORequest request) throws IdInvalidException {
+        String hassPassword = this.passwordEncoder.encode(request.getPassword());
+        request.setPassword(hassPassword);
         boolean isUsernameExist = this.userService.isUsernameExist(request.getUsername());
         if (isUsernameExist) {
             throw new IdInvalidException("Username " + request.getUsername() + " đã tồn tại, vui lòng sử dụng username khác");
