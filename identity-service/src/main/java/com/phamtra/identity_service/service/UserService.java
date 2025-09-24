@@ -4,6 +4,7 @@ import com.phamtra.identity_service.dto.request.UserCreateDTORequest;
 import com.phamtra.identity_service.dto.request.UserUpdateDTORequest;
 import com.phamtra.identity_service.entity.User;
 import com.phamtra.identity_service.exception.IdInvalidException;
+import com.phamtra.identity_service.mapper.UserMapper;
 import com.phamtra.identity_service.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,16 +17,16 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
+        this.userMapper = userMapper;
     }
 
     public User createUser(UserCreateDTORequest request) {
 
-        User user = modelMapper.map(request, User.class);
+        User user = userMapper.toUser(request);
 
         return this.userRepository.save(user);
     }
@@ -33,7 +34,7 @@ public class UserService {
     public User updateUser(long id, UserUpdateDTORequest request) {
         User user = getUserbyId(id);
 
-        modelMapper.map(request, user);
+        userMapper.updateUser(user, request);
 
         return this.userRepository.save(user);
     }
