@@ -58,4 +58,8 @@ public class UserService {
     public boolean isUsernameExist(String username) {
         return this.userRepository.existsByUsername(username);
     }
+
+    public User getUserByUsername(String username) {
+        return this.userRepository.findByUsername(username);
+    }
 }
