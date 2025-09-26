@@ -60,4 +60,6 @@ public class SecurityConfiguration {
         return new NimbusJwtEncoder(new ImmutableSecret<>(getSecretKey()));
     }
 
+
+
 }

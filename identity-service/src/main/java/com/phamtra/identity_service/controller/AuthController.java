@@ -1,6 +1,7 @@
 package com.phamtra.identity_service.controller;
 
 import com.phamtra.identity_service.dto.request.LoginDTO;
+import com.phamtra.identity_service.dto.respone.LoginDTORespone;
 import com.phamtra.identity_service.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginDTO> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<LoginDTORespone> login(@RequestBody LoginDTO loginDTO) {
         // nạp input gồm username/password vào Security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginDTO.getUsername(), loginDTO.getPassword());
@@ -33,7 +34,9 @@ public class AuthController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         //create a token
-        this.securityUtil.createToken(authentication);
-        return ResponseEntity.ok().body(loginDTO);
+        String access_token = this.securityUtil.createToken(authentication);
+        LoginDTORespone res = new LoginDTORespone();
+        res.setAccessToken(access_token);
+        return ResponseEntity.ok().body(res);
     }
 }
