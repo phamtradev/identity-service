@@ -4,8 +4,8 @@ import com.phamtra.identity_service.dto.request.LoginDTO;
 import com.phamtra.identity_service.dto.respone.LoginDTORespone;
 import com.phamtra.identity_service.util.SecurityUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final AuthenticationManager authenticationManager;
     private final SecurityUtil securityUtil;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder,
+    public AuthController(AuthenticationManager authenticationManager,
                           SecurityUtil securityUtil) {
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.authenticationManager = authenticationManager;
         this.securityUtil = securityUtil;
     }
 
@@ -32,7 +32,8 @@ public class AuthController {
 
         // xác thực người dùng -> cần ghi đè loadUserByUsername bằng cách tạo
         // UserDetailCustom implement UserDetails
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        // use AuthenticationManager so configured PasswordEncoder/UserDetailsService are applied
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
         //create a token
         String access_token = this.securityUtil.createToken(authentication);

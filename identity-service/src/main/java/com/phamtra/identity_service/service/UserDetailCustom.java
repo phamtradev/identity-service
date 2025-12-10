@@ -21,6 +21,9 @@ public class UserDetailCustom implements UserDetailsService  {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         com.phamtra.identity_service.entity.User user = this.userService.getUserByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User '" + username + "' not found");
+        }
         return new User(
                 user.getUsername(),
                 user.getPassword(),

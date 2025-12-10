@@ -5,9 +5,9 @@ import com.phamtra.identity_service.dto.request.UserUpdateDTORequest;
 import com.phamtra.identity_service.entity.User;
 import com.phamtra.identity_service.exception.IdInvalidException;
 import com.phamtra.identity_service.service.UserService;
-import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +40,13 @@ public class UserController {
         return ResponseEntity.ok().body(this.userService.getUsers());
     }
 
+    @GetMapping("/users/my-info")
+    public ResponseEntity<?> getMyInfo(Authentication authentication) {
+        String username = authentication.getName();
+        User user = this.userService.getUserByUsername(username);
+        return ResponseEntity.ok().body(user);
+    }
+
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") long id) {
         User user = this.userService.getUserbyId(id);
@@ -59,6 +66,6 @@ public class UserController {
             throw new IdInvalidException("User với id: " + id + " không tồn tại");
         }
         this.userService.deleteUser(id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok().body("User đã được xóa thành công");
     }
 }
